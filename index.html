@@ -1,0 +1,255 @@
+ <!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUTOVERSE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">AUTOVERSE</div>
+    <div class="nav-tabs">
+      <button id="btnAll" class="tab-btn active">Barchasi</button>
+      <button id="btnCars" class="tab-btn">Sportkarlar</button>
+      <button id="btnMotos" class="tab-btn">Motosiklar</button>
+      <button id="btnSuvs" class="tab-btn">Yo'l Tanlamaslar</button>
+      <button id="btnElectrCars" class="tab-btn">Elektrmobillar</button>
+      <button id="btnClassicCars" class="tab-btn">Klassik</button>
+      <button id="btnCompare" class="tab-btn compare-tab-btn" onclick="openCompareModal()" style="border-color: var(--gold); color: var(--gold-light); cursor: pointer;">
+  ⚖️ Solishtirish (<span id="compareCount">0</span>)</button>
+    </div>
+
+    
+
+  </header>
+
+  
+  <section class="hero">
+    <video autoplay muted loop playsinline class="hero-video">
+        <source src="car4k.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-subtitle">Tezlik va Mukammallik</div>
+      <h1 class="hero-title">Orzuyingizdagi Moshinalar Bu Yerda</h1>
+    </div>
+  </section>
+
+  <div class="filter-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="Model, marka yoki xarakteristika bo'yicha qidiring...">
+  </div>
+
+  <main class="container">
+    <div class="grid-header">
+      <h2 class="section-title" id="categoryTitle">Barcha Avtomobillar</h2>
+    </div>
+    <div class="vehicles-grid" id="vehiclesGrid"></div>
+  </main>
+
+  
+  <div id="vipModal" class="vip-modal-overlay">
+    <div class="vip-modal-content">
+      
+      <button class="vip-close-btn" onclick="closeVehicleDetails()">&times;</button>
+
+      <div class="vip-card-wrapper">
+        <div class="vip-media-box">
+          <div class="image-overlay-gradient"></div>
+          <img id="carImage" src="" alt="VIP Vehicle">
+          <span id="carCategory" class="vip-badge">VIP EDITION</span>
+          <div class="badge-glow"></div>
+        </div>
+
+        <div class="vip-info-box">
+          <div class="vip-header">
+            <span class="subtitle">EXCLUSIVE SHOWCASE</span>
+            <h1 id="carTitle" class="vip-title">---</h1>
+            <div id="carPrice" class="vip-price">$0</div>
+          </div>
+
+          <p id="carDesc" class="vip-desc">...</p>
+
+          <div class="vip-specs-grid">
+            <div class="spec-tile">
+              <div class="tile-icon">⚡️</div>
+              <div class="tile-content">
+                <span class="label">Yili</span>
+                <span id="carYear" class="value">---</span>
+              </div>
+            </div>
+            <div class="spec-tile">
+              <div class="tile-icon">🏎</div>
+              <div class="tile-content">
+                <span class="label">Dvigatel</span>
+                <span id="carEngine" class="value">---</span>
+              </div>
+            </div>
+            <div class="spec-tile">
+              <div class="tile-icon">🔥</div>
+              <div class="tile-content">
+                <span class="label">Maksimal Tezlik</span>
+                <span id="carSpeed" class="value">---</span>
+              </div>
+            </div>
+            <div class="spec-tile">
+              <div class="tile-icon">⚙️</div>
+              <div class="tile-content">
+                <span class="label">Quvvati</span>
+                <span id="carPower" class="value">---</span>
+              </div>
+            </div>
+            <div class="spec-tile">
+              <div class="tile-icon">⏱️</div>
+              <div class="tile-content">
+                <span class="label">Tezlashuv (0-100)</span>
+                <span id="carAccel" class="value">---</span>
+              </div>
+            </div>
+            <div class="spec-tile">
+              <div class="tile-icon">🕹</div>
+              <div class="tile-content">
+                <span class="label">Uzatmalar Qutisi</span>
+                <span id="carTransmission" class="value">---</span>
+              </div>
+            </div>
+          </div>
+ <button class="vip-buy-btn" onclick="alert('Buyurtmangiz qabul qilindi')">
+            <span class="btn-text">EKSKLUSIV BUYURTMA</span>
+          </button>
+          <div id="js-wrapper" class="card-container"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+ 
+
+    
+    
+<div id="compareModal" class="vip-modal-overlay">
+  <div class="vip-modal-content" style="max-width: 900px; background: #0f0f13; border: 1px solid var(--gold);">
+    <button class="vip-close-btn" onclick="closeCompareModal()">&times;</button>
+    <div style="padding: 40px;">
+      <h2 style="font-size: 28px; margin-bottom: 20px; color: var(--gold);">Avtomobillarni Solishtirish</h2>
+      <div id="compareGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+       
+      </div>
+    </div>
+  </div>
+</div>
+<section class="range-calc-section">
+  <div class="calc-card">
+    <div class="calc-header">
+      <h2>🔋 Smart Range & Power Calculator</h2>
+      <p>Haydash rejimingizga qarab batareya masofasini real vaqtda hisoblang</p>
+    </div>
+
+    <div class="calc-body">
+      
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>O'rtacha Tezlik:</span>
+          <strong id="speedValue">90 km/h</strong>
+        </div>
+        <input type="range" id="speedInput" min="50" max="200" value="90" oninput="calculateRange()">
+      </div>
+
+     
+      <div class="mode-buttons">
+        <button class="mode-btn active" data-mode="eco" onclick="setDriveMode(this, 'eco')">🌱 Eco Mode</button>
+        <button class="mode-btn" data-mode="comfort" onclick="setDriveMode(this, 'comfort')">🚘 Comfort</button>
+        <button class="mode-btn" data-mode="sport" onclick="setDriveMode(this, 'sport')">⚡ Sport+</button>
+      </div>
+
+      
+      <div class="range-result-display">
+        <span class="range-label">Tahminiy Yurish Masofasi:</span>
+        <div class="range-number"><span id="rangeKm">580</span> <small>KM</small></div>
+        <div class="battery-bar-container">
+          <div class="battery-bar" id="batteryBar" style="width: 85%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quiz-section">
+  <div class="quiz-card">
+    <div id="quizStep">
+      <div class="quiz-progress-wrapper">
+        <span id="quizStepText" class="step-counter">1/5</span>
+        <div class="quiz-progress"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <h3 id="quizQuestion" class="quiz-title">Yuklanmoqda...</h3>
+      <div id="quizOptions" class="options-grid"></div>
+    </div>
+
+    <!-- Natija ekrani -->
+    <div id="quizResult" class="result-box" style="display: none;">
+      <span class="result-badge">⚡ Sizning xarakteringizga mos texnika:</span>
+      <h2 id="resultCarName">---</h2>
+      <p id="resultCarDesc">---</p>
+      <button class="btn-reset" onclick="resetQuiz()">Qayta topshirish 🔄</button>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">GARAGE VIP</div>
+      <p>O'zbekistondagi eng eksklyuziv hamda zamonaviy avtomobillar katalogi. Siz uchun xavfsizlik va hashamat uyg'unligi.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">IG</a>
+        <a href="#" class="social-btn">TG</a>
+        <a href="#" class="social-btn">YT</a>
+        <a href="#" class="social-btn">FB</a>
+      </div>
+    </div>
+
+    <div>
+      <h4 class="footer-title">Katalog</h4>
+      <ul class="footer-links">
+        <li><a href="#">Giperkarlar</a></li>
+        <li><a href="#">Elektromobillar</a></li>
+        <li><a href="#">Biznes Klass</a></li>
+        <li><a href="#">Krossoverlar</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-title">Kompaniya</h4>
+      <ul class="footer-links">
+        <li><a href="#">Biz haqimizda</a></li>
+        <li><a href="#">Xizmatlar</a></li>
+        <li><a href="#">VIP Garaj</a></li>
+        <li><a href="#">Aloqa</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-title">Yangiliklar</h4>
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 10px;">Yangi mashinalar kelishi bilan xabardor bo'ling:</p>
+      <div class="newsletter-box">
+        <input type="email" class="newsletter-input" placeholder="Emailingizni kiriting...">
+        <button class="newsletter-btn">OBUNA</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 Garage VIP. Barcha huquqlarhimoyalangan.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Muxfiylik Siyosati</a>
+      <a href="#">Foydalanish Qoidalari</a>
+    </div>
+  </div>
+</footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
