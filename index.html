@@ -1,255 +1,1155 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AUTOVERSE</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IshTop — Ish Qidiruv Sayti</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+  :root{
+    --bg1:#eef2ff; --bg2:#f0f9ff; --bg3:#fdf4ff;
+    --card:rgba(255,255,255,0.85); --card-solid:#ffffff; --glass:rgba(255,255,255,0.7);
+    --text:#0f172a; --text2:#475569; --text3:#94a3b8;
+    --border:rgba(226,232,240,0.8); --primary:#6366f1; --primary-dark:#4338ca;
+    --accent:#ec4899; --accent2:#8b5cf6; --success:#10b981; --danger:#ef4444;
+    --shadow:0 8px 32px rgba(99,102,241,0.08); --shadow-hover:0 20px 50px rgba(99,102,241,0.2);
+    --hero:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
+    --hero2:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  }
+  body.dark{
+    --bg1:#0a0e27; --bg2:#0f0a1f; --bg3:#1a0f2e;
+    --card:rgba(30,41,59,0.7); --card-solid:#1e293b; --glass:rgba(30,41,59,0.6);
+    --text:#f1f5f9; --text2:#cbd5e1; --text3:#64748b;
+    --border:rgba(51,65,85,0.8); --shadow:0 8px 32px rgba(0,0,0,0.5);
+    --shadow-hover:0 20px 50px rgba(99,102,241,0.3);
+  }
+  body{
+    background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);
+    background-attachment:fixed;
+    color:var(--text);line-height:1.6;transition:background .4s,color .3s;
+    overflow-x:hidden;min-height:100vh;position:relative;
+  }
+  /* Fon dekoratsiyasi */
+  body::before{
+    content:'';position:fixed;top:-20%;left:-10%;width:600px;height:600px;
+    background:radial-gradient(circle,rgba(99,102,241,0.15) 0%,transparent 70%);
+    border-radius:50%;z-index:-1;animation:blob1 20s infinite ease-in-out;pointer-events:none;
+  }
+  body::after{
+    content:'';position:fixed;bottom:-20%;right:-10%;width:700px;height:700px;
+    background:radial-gradient(circle,rgba(236,72,153,0.12) 0%,transparent 70%);
+    border-radius:50%;z-index:-1;animation:blob2 25s infinite ease-in-out;pointer-events:none;
+  }
+  @keyframes blob1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(80px,60px) scale(1.15)}}
+  @keyframes blob2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-100px,-80px) scale(1.2)}}
+  a{text-decoration:none;color:inherit;cursor:pointer}
+  button{cursor:pointer;font-family:inherit}
 
+  /* HEADER */
+  header{
+    background:var(--glass);backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:100;padding:14px 32px;
+    display:flex;justify-content:space-between;align-items:center;gap:20px;
+    transition:background .3s;
+  }
+  .logo{font-size:24px;font-weight:800;background:var(--hero);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;transition:.3s;white-space:nowrap}
+  .logo:hover{transform:scale(1.05)}
+  .logo span{-webkit-text-fill-color:initial;color:var(--accent)}
+  nav.menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  nav.menu a{color:var(--text2);font-size:15px;font-weight:500;position:relative;transition:.3s}
+  nav.menu a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:2px;background:var(--hero);transition:.3s;border-radius:2px}
+  nav.menu a:hover{color:var(--primary)}
+  nav.menu a:hover::after{width:100%}
+  .header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+  select.lang-select,button.theme-btn{
+    padding:8px 12px;border:1.5px solid var(--border);
+    background:var(--glass);color:var(--text);border-radius:10px;
+    font-size:14px;font-weight:600;transition:.3s;cursor:pointer;outline:none;
+    backdrop-filter:blur(10px);
+  }
+  select.lang-select:hover,button.theme-btn:hover{border-color:var(--primary);transform:translateY(-1px)}
+  button.theme-btn{font-size:16px;padding:8px 11px}
+
+  .btn-login{
+    padding:9px 18px;border:1.5px solid var(--primary);background:transparent;
+    color:var(--primary);border-radius:10px;font-size:14px;font-weight:600;transition:.3s;
+  }
+  .btn-login:hover{background:var(--primary);color:white;transform:translateY(-1px)}
+  .btn-register{
+    padding:9px 18px;border:none;background:var(--hero);color:white;
+    border-radius:10px;font-size:14px;font-weight:600;transition:.3s;
+    box-shadow:0 4px 15px rgba(99,102,241,.35);
+  }
+  .btn-register:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(99,102,241,.5)}
+
+  .user-info{display:none;align-items:center;gap:10px}
+  .user-info.show{display:flex}
+  .avatar{width:40px;height:40px;border-radius:50%;background:var(--hero);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;box-shadow:0 4px 12px rgba(99,102,241,.3)}
+  .user-meta strong{font-size:13.5px;display:block;color:var(--text)}
+  .user-meta small{font-size:11.5px;color:var(--text3)}
+
+  /* PAGES */
+  .page{display:none}
+  .page.active{display:block}
+  #registerPage.active,#loginPage.active{
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:20px;position:relative;
+  }
+
+  /* HERO */
+  .hero{
+    background:var(--hero);color:white;padding:80px 32px;
+    text-align:center;position:relative;overflow:hidden;
+    margin:24px;border-radius:32px;
+    box-shadow:0 25px 60px rgba(99,102,241,0.35);
+  }
+  .hero::before{
+    content:'';position:absolute;top:-50%;right:-10%;width:600px;height:600px;
+    background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 60%);
+    border-radius:50%;animation:float 10s infinite;
+  }
+  .hero::after{
+    content:'';position:absolute;bottom:-40%;left:-10%;width:500px;height:500px;
+    background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 60%);
+    border-radius:50%;animation:float 12s infinite reverse;
+  }
+  @keyframes float{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-30px) translateX(30px)}}
+  .hero-content{position:relative;z-index:2;max-width:900px;margin:0 auto}
+  .hero h1{font-size:clamp(28px,5vw,52px);margin-bottom:14px;font-weight:800;letter-spacing:-1px;text-shadow:0 2px 20px rgba(0,0,0,0.15)}
+  .hero>p,.hero-content>p{font-size:clamp(15px,2vw,18px);opacity:.95;margin-bottom:34px;font-weight:400}
+
+  .hero-search{
+    background:rgba(255,255,255,0.98);padding:10px;border-radius:16px;
+    display:flex;gap:8px;max-width:800px;margin:0 auto;flex-wrap:wrap;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+  }
+  body.dark .hero-search{background:rgba(30,41,59,0.95)}
+  .hero-search input,.hero-search select{
+    flex:1;min-width:150px;padding:15px 18px;border:1.5px solid transparent;
+    font-size:15px;outline:none;background:rgba(241,245,249,0.6);
+    border-radius:10px;color:var(--text);transition:.2s;font-family:inherit;
+  }
+  body.dark .hero-search input,body.dark .hero-search select{background:rgba(15,23,42,0.6);color:#e2e8f0}
+  .hero-search input:focus,.hero-search select:focus{border-color:var(--primary);background:white;box-shadow:0 0 0 4px rgba(99,102,241,.15)}
+  body.dark .hero-search input:focus,body.dark .hero-search select:focus{background:#0f172a}
+  .hero-search select option{background:white;color:#0f172a}
+  body.dark .hero-search select option{background:#1e293b;color:#e2e8f0}
+  .hero-search button{
+    padding:15px 34px;background:linear-gradient(135deg,#10b981,#059669);color:white;
+    border:none;border-radius:10px;font-size:15px;font-weight:700;transition:.3s;
+    box-shadow:0 4px 15px rgba(16,185,129,.35);
+  }
+  .hero-search button:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(16,185,129,.5)}
+
+  .hero-stats{display:flex;justify-content:center;gap:clamp(30px,6vw,80px);margin-top:50px;flex-wrap:wrap;position:relative;z-index:2}
+  .hero-stat h3{font-size:clamp(28px,4vw,40px);margin-bottom:4px;font-weight:800;text-shadow:0 2px 15px rgba(0,0,0,0.15)}
+  .hero-stat p{font-size:13.5px;opacity:.9}
+
+  /* CONTAINER */
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .section{padding:60px 0}
+  .section-title{text-align:center;margin-bottom:48px}
+  .section-title h2{
+    font-size:clamp(24px,3.5vw,36px);margin-bottom:10px;font-weight:800;letter-spacing:-.5px;
+    background:var(--hero);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .section-title p{color:var(--text2);font-size:15.5px}
+  .section-title .line{width:70px;height:5px;background:var(--hero);margin:16px auto;border-radius:3px;box-shadow:0 4px 15px rgba(99,102,241,.4)}
+
+  /* CATEGORIES */
+  .categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px}
+  .category-card{
+    background:var(--glass);backdrop-filter:blur(20px) saturate(150%);
+    -webkit-backdrop-filter:blur(20px);
+    padding:30px 18px;border-radius:20px;text-align:center;cursor:pointer;
+    box-shadow:var(--shadow);transition:.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    border:1.5px solid var(--border);position:relative;overflow:hidden;
+  }
+  .category-card::before{
+    content:'';position:absolute;inset:0;background:var(--hero);opacity:0;transition:.4s;z-index:-1;
+  }
+  .category-card:hover{
+    transform:translateY(-8px) scale(1.02);border-color:transparent;
+    box-shadow:var(--shadow-hover);
+  }
+  .category-card:hover::before{opacity:1}
+  .category-card:hover .category-icon,.category-card:hover h3,.category-card:hover p{color:white;-webkit-text-fill-color:white}
+  .category-icon{font-size:42px;margin-bottom:14px;display:inline-block;transition:.4s}
+  .category-card:hover .category-icon{transform:scale(1.2) rotate(-5deg)}
+  .category-card h3{color:var(--text);font-size:16.5px;margin-bottom:6px;font-weight:700;transition:.3s}
+  .category-card p{color:var(--text3);font-size:13px;transition:.3s}
+
+  /* JOBS */
+  .jobs-filter{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
+  .jobs-filter input,.jobs-filter select{
+    flex:1;min-width:180px;padding:13px 16px;border:1.5px solid var(--border);
+    border-radius:12px;font-size:14.5px;background:var(--glass);color:var(--text);
+    outline:none;font-family:inherit;transition:.3s;backdrop-filter:blur(10px);
+  }
+  .jobs-filter input:focus,.jobs-filter select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:var(--card-solid)}
+  .jobs-filter select option{background:var(--card-solid);color:var(--text)}
+
+  .jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
+  .job-card{
+    background:var(--glass);backdrop-filter:blur(20px) saturate(150%);
+    -webkit-backdrop-filter:blur(20px);
+    padding:24px;border-radius:20px;
+    box-shadow:var(--shadow);transition:.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    border-left:4px solid transparent;
+    border-image:linear-gradient(135deg,var(--primary),var(--accent)) 1;
+    display:flex;flex-direction:column;position:relative;overflow:hidden;
+  }
+  .job-card::before{
+    content:'';position:absolute;top:0;left:0;width:100%;height:4px;
+    background:var(--hero);transform:scaleX(0);transform-origin:left;transition:.4s;
+  }
+  .job-card:hover::before{transform:scaleX(1)}
+  .job-card:hover{
+    transform:translateY(-8px);box-shadow:var(--shadow-hover);
+    background:var(--card-solid);
+  }
+  .job-card h3{color:var(--text);margin-bottom:10px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .job-card .meta{color:var(--text2);font-size:13px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:12px}
+  .job-card .desc{color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:14px;flex-grow:1}
+  .job-card .salary{color:var(--success);font-weight:800;font-size:17px;margin-bottom:14px}
+  .job-card .actions{display:flex;gap:8px}
+  .job-card .actions button{flex:1;padding:11px;border:none;border-radius:10px;font-size:13.5px;font-weight:700;transition:.3s}
+  .btn-apply{background:linear-gradient(135deg,var(--success),#059669);color:white;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+  .btn-apply:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,.5)}
+  .btn-detail{background:var(--bg2);color:var(--text);border:1.5px solid var(--border)!important}
+  .btn-detail:hover{background:var(--primary);color:white;border-color:var(--primary)!important;transform:translateY(-2px)}
+
+  .badge{
+    display:inline-block;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(236,72,153,.15));
+    color:var(--primary);padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700;
+    border:1px solid rgba(99,102,241,.2);
+  }
+  .badge-hot{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(236,72,153,.15));color:var(--danger);border-color:rgba(239,68,68,.2)}
+
+  /* COMPANIES */
+  .companies{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px}
+  .company-card{
+    background:var(--glass);backdrop-filter:blur(20px);
+    padding:26px 16px;border-radius:18px;text-align:center;
+    box-shadow:var(--shadow);transition:.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    border:1.5px solid var(--border);
+  }
+  .company-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover);border-color:var(--primary)}
+  .company-logo{
+    width:62px;height:62px;margin:0 auto 12px;background:var(--hero);
+    border-radius:18px;display:flex;align-items:center;justify-content:center;
+    color:white;font-size:24px;font-weight:800;
+    box-shadow:0 8px 20px rgba(99,102,241,.35);transition:.4s;
+  }
+  .company-card:hover .company-logo{transform:scale(1.1) rotate(-5deg)}
+  .company-card h4{color:var(--text);font-size:15px;margin-bottom:4px;font-weight:700}
+  .company-card p{color:var(--text3);font-size:12.5px}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+  .stat-box{
+    background:var(--glass);backdrop-filter:blur(20px);
+    padding:30px 20px;border-radius:20px;text-align:center;
+    box-shadow:var(--shadow);transition:.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    border:1.5px solid var(--border);position:relative;overflow:hidden;
+  }
+  .stat-box::before{
+    content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
+    background:var(--hero);opacity:0;transition:.4s;z-index:-1;
+  }
+  .stat-box:hover::before{opacity:1}
+  .stat-box:hover{transform:translateY(-8px) scale(1.02);border-color:transparent;box-shadow:var(--shadow-hover)}
+  .stat-box:hover h3,.stat-box:hover p,.stat-box:hover .icon{color:white;-webkit-text-fill-color:white}
+  .stat-box .icon{font-size:38px;margin-bottom:12px;transition:.3s}
+  .stat-box h3{font-size:30px;color:var(--text);margin-bottom:4px;font-weight:800;transition:.3s}
+  .stat-box p{color:var(--text2);font-size:13.5px;transition:.3s}
+
+  .about-text{
+    background:var(--glass);backdrop-filter:blur(20px);
+    padding:36px;border-radius:22px;box-shadow:var(--shadow);
+    margin-top:26px;line-height:1.8;border:1.5px solid var(--border);
+  }
+  .about-text h3{
+    margin-bottom:14px;font-size:21px;font-weight:800;
+    background:var(--hero);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .about-text p{color:var(--text2);margin-bottom:12px;font-size:15px}
+  .about-text ul{margin-left:22px;color:var(--text2);font-size:15px}
+  .about-text ul li{margin-bottom:8px}
+
+  /* REVIEWS */
+  .reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  .review-card{
+    background:var(--glass);backdrop-filter:blur(20px);
+    padding:28px;border-radius:20px;box-shadow:var(--shadow);
+    transition:.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    border:1.5px solid var(--border);position:relative;overflow:hidden;
+  }
+  .review-card::before{
+    content:'"';position:absolute;top:-20px;right:20px;font-size:120px;
+    color:var(--primary);opacity:.08;font-family:Georgia,serif;font-weight:bold;
+  }
+  .review-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover);border-color:var(--primary)}
+  .review-stars{color:#fbbf24;font-size:18px;margin-bottom:14px;letter-spacing:3px}
+  .review-card>p{color:var(--text2);font-style:italic;line-height:1.7;margin-bottom:20px;font-size:14.5px;position:relative;z-index:1}
+  .review-author{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+  .review-avatar{
+    width:50px;height:50px;border-radius:50%;background:var(--hero);color:white;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;
+    box-shadow:0 6px 15px rgba(99,102,241,.3);
+  }
+  .review-author-info h4{color:var(--text);font-size:14.5px;margin-bottom:2px;font-weight:700}
+  .review-author-info p{font-size:12.5px;color:var(--text3)}
+
+  /* CTA */
+  .cta-banner{
+    background:var(--hero);color:white;padding:60px 40px;border-radius:28px;
+    text-align:center;margin:40px 0;box-shadow:0 25px 60px rgba(99,102,241,.4);
+    position:relative;overflow:hidden;
+  }
+  .cta-banner::before{
+    content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;
+    background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);
+    border-radius:50%;animation:float 8s infinite;
+  }
+  .cta-banner h2{font-size:clamp(24px,3.5vw,34px);margin-bottom:14px;font-weight:800;position:relative;z-index:1;text-shadow:0 2px 20px rgba(0,0,0,.15)}
+  .cta-banner p{margin-bottom:28px;opacity:.95;font-size:16px;position:relative;z-index:1}
+  .cta-banner button{
+    padding:16px 40px;background:white;color:var(--primary-dark);border:none;
+    border-radius:12px;font-size:16px;font-weight:800;transition:.3s;
+    position:relative;z-index:1;box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+  .cta-banner button:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 15px 35px rgba(0,0,0,.3)}
+
+  /* AUTH */
+  .auth-card{
+    background:var(--card-solid);padding:42px 38px;border-radius:24px;
+    width:100%;max-width:470px;
+    box-shadow:0 30px 80px rgba(99,102,241,.3);
+    position:relative;z-index:2;max-height:95vh;overflow-y:auto;
+    border:1.5px solid var(--border);
+  }
+  .logo-top{
+    text-align:center;margin-bottom:20px;font-size:32px;font-weight:800;
+    background:var(--hero);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    cursor:pointer;transition:.3s;
+  }
+  .logo-top:hover{transform:scale(1.05)}
+  .logo-top span{-webkit-text-fill-color:initial;color:var(--accent)}
+  .auth-card h2{color:var(--text);text-align:center;margin-bottom:8px;font-size:26px;font-weight:800}
+  .auth-card .subtitle{color:var(--text3);text-align:center;margin-bottom:24px;font-size:14px}
+  .error-msg{
+    background:rgba(239,68,68,.12);color:var(--danger);padding:12px 16px;
+    border-radius:12px;font-size:13.5px;margin-bottom:16px;display:none;
+    border-left:4px solid var(--danger);
+  }
+  .error-msg.show{display:block;animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  .role-select{display:flex;gap:10px;margin-bottom:20px}
+  .role-select button{
+    flex:1;padding:13px;border:2px solid var(--border);background:var(--card-solid);
+    color:var(--text);border-radius:12px;font-size:13.5px;font-weight:700;transition:.3s;
+  }
+  .role-select button:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .role-select button.active{
+    border-color:transparent;background:var(--hero);color:white;
+    box-shadow:0 8px 20px rgba(99,102,241,.35);
+  }
+
+  .auth-card label{display:block;color:var(--text);margin-bottom:6px;font-size:13.5px;font-weight:600}
+  .auth-card input{
+    width:100%;padding:14px 16px;margin-bottom:15px;border:1.5px solid var(--border);
+    border-radius:12px;font-size:14.5px;background:var(--bg1);color:var(--text);
+    outline:none;font-family:inherit;transition:.3s;
+  }
+  body.dark .auth-card input{background:rgba(15,23,42,0.6)}
+  .auth-card input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:var(--card-solid)}
+
+  .btn-primary{
+    width:100%;padding:15px;background:var(--hero);color:white;border:none;
+    border-radius:12px;font-size:15.5px;font-weight:800;transition:.3s;margin-top:4px;
+    box-shadow:0 8px 25px rgba(99,102,241,.35);letter-spacing:.3px;
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(99,102,241,.5)}
+
+  .switch{text-align:center;color:var(--text2);font-size:13.5px;margin-top:18px}
+  .switch a{color:var(--primary);font-weight:700}
+  .switch a:hover{text-decoration:underline}
+  .home-link{display:block;text-align:center;margin-top:20px;color:var(--text3);font-size:13.5px;transition:.2s}
+  .home-link:hover{color:var(--primary)}
+
+  /* MODAL */
+  .modal{
+    display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    justify-content:center;align-items:center;z-index:200;padding:20px;overflow-y:auto;
+  }
+  .modal.active{display:flex}
+  .modal-content{
+    background:var(--card-solid);padding:36px;border-radius:22px;width:100%;max-width:470px;
+    max-height:90vh;overflow-y:auto;position:relative;animation:modalIn .35s cubic-bezier(0.175,0.885,0.32,1.275);
+    border:1.5px solid var(--border);box-shadow:0 30px 80px rgba(99,102,241,.3);
+  }
+  @keyframes modalIn{from{opacity:0;transform:translateY(-30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .modal-content h2{color:var(--text);margin-bottom:6px;text-align:center;font-size:23px;font-weight:800}
+  .modal-content .subtitle{color:var(--text3);text-align:center;margin-bottom:22px;font-size:13.5px}
+  .modal-content label{display:block;color:var(--text);margin-bottom:5px;font-size:13.5px;font-weight:600}
+  .modal-content input,.modal-content select,.modal-content textarea{
+    width:100%;padding:13px 15px;margin-bottom:14px;border:1.5px solid var(--border);
+    border-radius:12px;font-size:14.5px;background:var(--bg1);color:var(--text);
+    outline:none;font-family:inherit;transition:.3s;
+  }
+  body.dark .modal-content input,body.dark .modal-content select,body.dark .modal-content textarea{background:rgba(15,23,42,0.6)}
+  .modal-content input:focus,.modal-content select:focus,.modal-content textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:var(--card-solid)}
+  .modal-content select option{background:var(--card-solid);color:var(--text)}
+  .modal-content textarea{min-height:90px;resize:vertical}
+  .modal-content .close-x{
+    position:absolute;top:14px;right:18px;font-size:26px;cursor:pointer;
+    color:var(--text3);background:none;border:none;line-height:1;transition:.3s;
+    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  }
+  .modal-content .close-x:hover{color:white;background:var(--danger);transform:rotate(90deg)}
+
+  /* FOOTER */
+  footer{
+    background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%);
+    color:#cbd5e1;padding:60px 32px 24px;margin-top:60px;
+    position:relative;overflow:hidden;
+  }
+  footer::before{
+    content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;
+    background:radial-gradient(circle,rgba(99,102,241,.15),transparent 70%);
+    border-radius:50%;pointer-events:none;
+  }
+  .footer-grid{
+    max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;
+    gap:40px;padding-bottom:32px;border-bottom:1px solid #1e293b;position:relative;z-index:1;
+  }
+  .footer-col h4{color:white;margin-bottom:16px;font-size:15.5px;font-weight:700}
+  .footer-col p{font-size:13.5px;line-height:1.8;color:#94a3b8}
+  .footer-col ul{list-style:none}
+  .footer-col ul li{margin-bottom:10px}
+  .footer-col ul li a{color:#94a3b8;font-size:13.5px;transition:.3s}
+  .footer-col ul li a:hover{color:var(--primary);padding-left:4px}
+  .footer-bottom{
+    max-width:1200px;margin:22px auto 0;display:flex;justify-content:space-between;
+    align-items:center;flex-wrap:wrap;gap:14px;position:relative;z-index:1;
+  }
+  .footer-bottom p{font-size:12.5px;color:#64748b}
+  .social-icons{display:flex;gap:10px}
+  .social-icons a{
+    width:40px;height:40px;background:rgba(255,255,255,.05);color:#cbd5e1;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:15px;transition:.3s;border:1px solid rgba(255,255,255,.1);
+  }
+  .social-icons a:hover{background:var(--hero);color:white;transform:translateY(-4px);border-color:transparent}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--success),#059669);
+    color:white;padding:15px 24px;border-radius:14px;
+    box-shadow:0 15px 40px rgba(16,185,129,.4);display:none;z-index:300;
+    font-weight:700;font-size:14px;max-width:90vw;
+  }
+  .toast.show{display:block;animation:toastIn .4s}
+  @keyframes toastIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--text3);grid-column:1/-1;font-size:16px}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    header{padding:12px 18px;flex-wrap:wrap;gap:12px}
+    nav.menu{display:none}
+    .header-right{gap:6px}
+    .user-meta{display:none}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:26px}
+    .hero{margin:14px;border-radius:24px;padding:60px 22px}
+    .cta-banner{border-radius:20px;padding:44px 24px}
+  }
+  @media(max-width:600px){
+    .section{padding:45px 0}
+    .hero{padding:44px 18px;margin:10px;border-radius:20px}
+    .hero-search{flex-direction:column;padding:14px}
+    .hero-search input,.hero-search select,.hero-search button{width:100%}
+    .hero-stats{gap:28px}
+    .footer-grid{grid-template-columns:1fr;gap:24px}
+    footer{padding:44px 18px 20px}
+    .btn-login,.btn-register{padding:7px 12px;font-size:12.5px}
+    select.lang-select,button.theme-btn{padding:6px 9px;font-size:12.5px}
+    .logo{font-size:20px}
+    .modal-content,.auth-card{padding:28px 22px;border-radius:18px}
+    .jobs-filter input,.jobs-filter select{min-width:100%}
+  }
+</style>
+</head>
 <body>
 
+<div class="page active" id="homePage">
   <header>
-    <div class="logo">AUTOVERSE</div>
-    <div class="nav-tabs">
-      <button id="btnAll" class="tab-btn active">Barchasi</button>
-      <button id="btnCars" class="tab-btn">Sportkarlar</button>
-      <button id="btnMotos" class="tab-btn">Motosiklar</button>
-      <button id="btnSuvs" class="tab-btn">Yo'l Tanlamaslar</button>
-      <button id="btnElectrCars" class="tab-btn">Elektrmobillar</button>
-      <button id="btnClassicCars" class="tab-btn">Klassik</button>
-      <button id="btnCompare" class="tab-btn compare-tab-btn" onclick="openCompareModal()" style="border-color: var(--gold); color: var(--gold-light); cursor: pointer;">
-  ⚖️ Solishtirish (<span id="compareCount">0</span>)</button>
+    <div class="logo" onclick="showPage('home')">💼 Ish<span>Top</span></div>
+    <nav class="menu">
+      <a onclick="scrollToId('jobs')" data-i18n="menu_jobs">Ishlar</a>
+      <a onclick="scrollToId('categories')" data-i18n="menu_categories">Kategoriyalar</a>
+      <a onclick="scrollToId('companies')" data-i18n="menu_companies">Kompaniyalar</a>
+      <a onclick="scrollToId('about')" data-i18n="menu_about">Biz haqimizda</a>
+      <a onclick="scrollToId('reviews')" data-i18n="menu_reviews">Otzivlar</a>
+    </nav>
+    <div class="header-right">
+      <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
+        <option value="uz">🇺🇿 UZ</option>
+        <option value="ru">🇷🇺 RU</option>
+        <option value="en">🇬🇧 EN</option>
+      </select>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+      <div class="header-actions" id="guestActions" style="display:flex;gap:8px">
+        <button class="btn-login" onclick="showPage('login')" data-i18n="login">Kirish</button>
+        <button class="btn-register" onclick="showPage('register')" data-i18n="register">Ro'yxatdan o'tish</button>
+      </div>
+      <div class="user-info" id="userInfo">
+        <div class="avatar" id="userAvatar">U</div>
+        <div class="user-meta">
+          <strong id="userName">Foydalanuvchi</strong>
+          <small id="userRole">Ish qidiruvchi</small>
+        </div>
+        <button class="btn-login" onclick="logout()" style="padding:7px 12px;font-size:12.5px" data-i18n="logout">Chiqish</button>
+      </div>
     </div>
-
-    
-
   </header>
 
-  
   <section class="hero">
-    <video autoplay muted loop playsinline class="hero-video">
-        <source src="car4k.mp4" type="video/mp4">
-    </video>
-    <div class="hero-overlay"></div>
     <div class="hero-content">
-      <div class="hero-subtitle">Tezlik va Mukammallik</div>
-      <h1 class="hero-title">Orzuyingizdagi Moshinalar Bu Yerda</h1>
+      <h1 data-i18n="hero_title">O'zingizga mos ishni toping</h1>
+      <p data-i18n="hero_sub">O'zbekistondagi eng yaxshi vakansiyalar bir joyda</p>
+      <div class="hero-search">
+        <input type="text" id="heroSearch" placeholder="🔍 Lavozim, kompaniya..." oninput="renderJobs()">
+        <select id="heroLocation" onchange="renderJobs()">
+          <option value="">📍 Barcha shaharlar</option>
+          <option>Toshkent</option><option>Samarqand</option><option>Buxoro</option>
+          <option>Namangan</option><option>Andijon</option><option>Remote</option>
+        </select>
+        <button onclick="scrollToId('jobs')" data-i18n="search">Qidirish</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><h3 id="statJobs">0</h3><p data-i18n="stat_jobs">Faol vakansiyalar</p></div>
+        <div class="hero-stat"><h3 id="statCompanies">0</h3><p data-i18n="stat_companies">Kompaniyalar</p></div>
+        <div class="hero-stat"><h3 id="statUsers">0</h3><p data-i18n="stat_users">Ro'yxatdan o'tganlar</p></div>
+      </div>
     </div>
   </section>
 
-  <div class="filter-bar">
-    <input type="text" id="searchInput" class="search-input" placeholder="Model, marka yoki xarakteristika bo'yicha qidiring...">
-  </div>
-
-  <main class="container">
-    <div class="grid-header">
-      <h2 class="section-title" id="categoryTitle">Barcha Avtomobillar</h2>
-    </div>
-    <div class="vehicles-grid" id="vehiclesGrid"></div>
-  </main>
-
-  
-  <div id="vipModal" class="vip-modal-overlay">
-    <div class="vip-modal-content">
-      
-      <button class="vip-close-btn" onclick="closeVehicleDetails()">&times;</button>
-
-      <div class="vip-card-wrapper">
-        <div class="vip-media-box">
-          <div class="image-overlay-gradient"></div>
-          <img id="carImage" src="" alt="VIP Vehicle">
-          <span id="carCategory" class="vip-badge">VIP EDITION</span>
-          <div class="badge-glow"></div>
-        </div>
-
-        <div class="vip-info-box">
-          <div class="vip-header">
-            <span class="subtitle">EXCLUSIVE SHOWCASE</span>
-            <h1 id="carTitle" class="vip-title">---</h1>
-            <div id="carPrice" class="vip-price">$0</div>
-          </div>
-
-          <p id="carDesc" class="vip-desc">...</p>
-
-          <div class="vip-specs-grid">
-            <div class="spec-tile">
-              <div class="tile-icon">⚡️</div>
-              <div class="tile-content">
-                <span class="label">Yili</span>
-                <span id="carYear" class="value">---</span>
-              </div>
-            </div>
-            <div class="spec-tile">
-              <div class="tile-icon">🏎</div>
-              <div class="tile-content">
-                <span class="label">Dvigatel</span>
-                <span id="carEngine" class="value">---</span>
-              </div>
-            </div>
-            <div class="spec-tile">
-              <div class="tile-icon">🔥</div>
-              <div class="tile-content">
-                <span class="label">Maksimal Tezlik</span>
-                <span id="carSpeed" class="value">---</span>
-              </div>
-            </div>
-            <div class="spec-tile">
-              <div class="tile-icon">⚙️</div>
-              <div class="tile-content">
-                <span class="label">Quvvati</span>
-                <span id="carPower" class="value">---</span>
-              </div>
-            </div>
-            <div class="spec-tile">
-              <div class="tile-icon">⏱️</div>
-              <div class="tile-content">
-                <span class="label">Tezlashuv (0-100)</span>
-                <span id="carAccel" class="value">---</span>
-              </div>
-            </div>
-            <div class="spec-tile">
-              <div class="tile-icon">🕹</div>
-              <div class="tile-content">
-                <span class="label">Uzatmalar Qutisi</span>
-                <span id="carTransmission" class="value">---</span>
-              </div>
-            </div>
-          </div>
- <button class="vip-buy-btn" onclick="alert('Buyurtmangiz qabul qilindi')">
-            <span class="btn-text">EKSKLUSIV BUYURTMA</span>
-          </button>
-          <div id="js-wrapper" class="card-container"></div>
-        </div>
+  <section class="section" id="categories">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="cat_title">Kategoriyalar bo'yicha ish qidirish</h2>
+        <div class="line"></div>
+        <p data-i18n="cat_sub">O'zingizga mos sohani tanlang</p>
       </div>
-
+      <div class="categories" id="categoriesList"></div>
     </div>
-  </div>
- 
+  </section>
 
-    
-    
-<div id="compareModal" class="vip-modal-overlay">
-  <div class="vip-modal-content" style="max-width: 900px; background: #0f0f13; border: 1px solid var(--gold);">
-    <button class="vip-close-btn" onclick="closeCompareModal()">&times;</button>
-    <div style="padding: 40px;">
-      <h2 style="font-size: 28px; margin-bottom: 20px; color: var(--gold);">Avtomobillarni Solishtirish</h2>
-      <div id="compareGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-       
+  <section class="section" id="jobs">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="jobs_title">Mashhur vakansiyalar</h2>
+        <div class="line"></div>
+        <p data-i18n="jobs_sub">Eng so'nggi va qiziqarli ish o'rinlari</p>
+      </div>
+      <div class="jobs-filter">
+        <input type="text" id="searchInput" placeholder="🔍 Qidirish..." oninput="renderJobs()">
+        <select id="categoryFilter" onchange="renderJobs()">
+          <option value="">Barcha kategoriyalar</option>
+          <option>IT</option><option>Marketing</option><option>Dizayn</option>
+          <option>Sotuv</option><option>Ta'lim</option><option>Moliya</option>
+          <option>Xizmat ko'rsatish</option><option>Qurilish</option><option>Boshqa</option>
+        </select>
+        <select id="locationFilter" onchange="renderJobs()">
+          <option value="">Barcha shaharlar</option>
+          <option>Toshkent</option><option>Samarqand</option><option>Buxoro</option>
+          <option>Namangan</option><option>Andijon</option><option>Remote</option>
+        </select>
+      </div>
+      <div class="jobs-grid" id="jobsList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="companies">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="comp_title">Mashhur kompaniyalar</h2>
+        <div class="line"></div>
+        <p data-i18n="comp_sub">O'zbekistondagi yetakchi ish beruvchilar</p>
+      </div>
+      <div class="companies" id="companiesList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="about_title">Biz haqimizda</h2>
+        <div class="line"></div>
+        <p data-i18n="about_sub">IshTop — sizning ishonchli hamkoringiz</p>
+      </div>
+      <div class="about-grid">
+        <div class="stat-box"><div class="icon">🎯</div><h3>2018</h3><p data-i18n="about_m1">Tashkil topgan yil</p></div>
+        <div class="stat-box"><div class="icon">💼</div><h3 id="aboutJobsCount">60+</h3><p data-i18n="about_m2">Faol vakansiyalar</p></div>
+        <div class="stat-box"><div class="icon">🏢</div><h3>500+</h3><p data-i18n="about_m3">Hamkor kompaniyalar</p></div>
+        <div class="stat-box"><div class="icon">👥</div><h3>10,000+</h3><p data-i18n="about_m4">Foydalanuvchilar</p></div>
+      </div>
+      <div class="about-text">
+        <h3 data-i18n="about_mission">🎯 Bizning missiyamiz</h3>
+        <p data-i18n="about_p1">IshTop — O'zbekistondagi yetakchi ish qidiruv platformasi. Bizning maqsadimiz — har bir insonga o'ziga mos ish topishda yordam berish.</p>
+        <p data-i18n="about_p2">Biz 2018-yildan beri faoliyat yuritamiz va minglab odamlarga ish topishda yordam berdik.</p>
+        <h3 style="margin-top:22px" data-i18n="about_why">✨ Nega aynan biz?</h3>
+        <ul>
+          <li data-i18n="about_l1">✅ Bepul — ish qidiruvchilar uchun hech qanday to'lov yo'q</li>
+          <li data-i18n="about_l2">✅ Tez — ariza topshirish 1 daqiqada</li>
+          <li data-i18n="about_l3">✅ Ishonchli — barcha kompaniyalar tekshirilgan</li>
+          <li data-i18n="about_l4">✅ Qulay — mobil va kompyuterda ishlaydi</li>
+          <li data-i18n="about_l5">✅ Zamonaviy — doimiy yangilanib boradi</li>
+        </ul>
       </div>
     </div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="rev_title">Foydalanuvchilar fikri</h2>
+        <div class="line"></div>
+        <p data-i18n="rev_sub">Bizning foydalanuvchilar nima deydi</p>
+      </div>
+      <div class="reviews-grid" id="reviewsList"></div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="cta-banner">
+      <h2 data-i18n="cta_title">Ish beruvchimisiz?</h2>
+      <p data-i18n="cta_sub">Kompaniyangiz uchun eng yaxshi xodimlarni toping. Bepul e'lon joylang!</p>
+      <button onclick="openPostJob()" data-i18n="cta_btn">+ Ish e'loni joylash</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>💼 IshTop</h4>
+        <p data-i18n="footer_about">O'zbekistondagi eng yirik ish qidiruv platformasi.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_jobseekers">Ish qidiruvchilarga</h4>
+        <ul>
+          <li><a onclick="scrollToId('jobs')" data-i18n="menu_jobs">Ishlar</a></li>
+          <li><a onclick="scrollToId('categories')" data-i18n="menu_categories">Kategoriyalar</a></li>
+          <li><a onclick="showToast('Tez orada!')" data-i18n="footer_resume">Rezyume yaratish</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_employers">Ish beruvchilarga</h4>
+        <ul>
+          <li><a onclick="openPostJob()" data-i18n="cta_btn">Ish joylash</a></li>
+          <li><a onclick="showToast('Tez orada!')" data-i18n="footer_prices">Narxlar</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_contact">Bog'lanish</h4>
+        <ul>
+          <li><a>📞 +998 71 200 00 00</a></li>
+          <li><a>✉️ info@ishtop.uz</a></li>
+          <li><a>📍 Toshkent sh.</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p data-i18n="footer_copyright">© 2025 IshTop. Barcha huquqlar himoyalangan.</p>
+      <div class="social-icons">
+        <a>✈️</a><a>📷</a><a>f</a><a>▶</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="page" id="registerPage">
+  <div class="auth-card">
+    <div class="logo-top" onclick="showPage('home')">💼 Ish<span>Top</span></div>
+    <h2 data-i18n="reg_title">Ro'yxatdan o'tish</h2>
+    <p class="subtitle" data-i18n="reg_sub">Hisobingizni yarating</p>
+    <div class="error-msg" id="regError"></div>
+    <div class="role-select" id="roleSelect">
+      <button class="active" onclick="selectRole(this,'jobseeker')" data-i18n="reg_jobseeker">👤 Ish qidiruvchi</button>
+      <button onclick="selectRole(this,'employer')" data-i18n="reg_employer">🏢 Ish beruvchi</button>
+    </div>
+    <div id="nameField">
+      <label data-i18n="reg_name">To'liq ismingiz *</label>
+      <input type="text" id="regName" placeholder="Ism va familiya">
+    </div>
+    <div id="companyField" style="display:none">
+      <label data-i18n="reg_company">Kompaniya nomi *</label>
+      <input type="text" id="regCompany" placeholder="Kompaniya nomi">
+    </div>
+    <label data-i18n="reg_email">Email *</label>
+    <input type="email" id="regEmail" placeholder="email@example.com">
+    <label data-i18n="reg_phone">Telefon</label>
+    <input type="tel" id="regPhone" placeholder="+998 __ ___ __ __">
+    <label data-i18n="reg_password">Parol *</label>
+    <input type="password" id="regPassword" placeholder="Kamida 6 ta belgi">
+    <button class="btn-primary" onclick="submitRegister()" data-i18n="reg_btn">Ro'yxatdan o'tish</button>
+    <div class="switch"><span data-i18n="reg_have">Hisobingiz bormi?</span> <a onclick="showPage('login')" data-i18n="login">Kirish</a></div>
+    <a class="home-link" onclick="showPage('home')" data-i18n="back_home">← Bosh sahifaga qaytish</a>
   </div>
 </div>
-<section class="range-calc-section">
-  <div class="calc-card">
-    <div class="calc-header">
-      <h2>🔋 Smart Range & Power Calculator</h2>
-      <p>Haydash rejimingizga qarab batareya masofasini real vaqtda hisoblang</p>
-    </div>
 
-    <div class="calc-body">
-      
-      <div class="slider-group">
-        <div class="slider-label">
-          <span>O'rtacha Tezlik:</span>
-          <strong id="speedValue">90 km/h</strong>
+<div class="page" id="loginPage">
+  <div class="auth-card">
+    <div class="logo-top" onclick="showPage('home')">💼 Ish<span>Top</span></div>
+    <h2 data-i18n="login_title">Tizimga kirish</h2>
+    <p class="subtitle" data-i18n="login_sub">Hisobingizga kiring</p>
+    <div class="error-msg" id="loginError"></div>
+    <label data-i18n="reg_email">Email</label>
+    <input type="email" id="loginEmail" placeholder="email@example.com">
+    <label data-i18n="reg_password">Parol</label>
+    <input type="password" id="loginPassword" placeholder="Parolingiz">
+    <button class="btn-primary" onclick="submitLogin()" data-i18n="login_btn">Kirish</button>
+    <div class="switch"><span data-i18n="login_no">Hisobingiz yo'qmi?</span> <a onclick="showPage('register')" data-i18n="register">Ro'yxatdan o'tish</a></div>
+    <a class="home-link" onclick="showPage('home')" data-i18n="back_home">← Bosh sahifaga qaytish</a>
+  </div>
+</div>
+
+<div class="modal" id="postJobModal">
+  <div class="modal-content">
+    <button class="close-x" onclick="closePostJob()">×</button>
+    <h2 data-i18n="post_title">Yangi ish e'loni</h2>
+    <p class="subtitle" data-i18n="post_sub">Kompaniyangiz uchun xodim toping</p>
+    <label data-i18n="post_position">Lavozim nomi *</label>
+    <input type="text" id="jobTitle">
+    <label data-i18n="post_company">Kompaniya nomi *</label>
+    <input type="text" id="jobCompany">
+    <label data-i18n="post_category">Kategoriya *</label>
+    <select id="jobCategory">
+      <option value="">Tanlang...</option>
+      <option>IT</option><option>Marketing</option><option>Dizayn</option>
+      <option>Sotuv</option><option>Ta'lim</option><option>Moliya</option>
+      <option>Xizmat ko'rsatish</option><option>Qurilish</option><option>Boshqa</option>
+    </select>
+    <label data-i18n="post_city">Shahar *</label>
+    <select id="jobLocation">
+      <option value="">Tanlang...</option>
+      <option>Toshkent</option><option>Samarqand</option><option>Buxoro</option>
+      <option>Namangan</option><option>Andijon</option><option>Remote</option>
+    </select>
+    <label data-i18n="post_salary">Maosh (so'mda)</label>
+    <input type="number" id="jobSalary">
+    <label data-i18n="post_phone">Telefon *</label>
+    <input type="text" id="jobPhone">
+    <label data-i18n="post_desc">Ish tavsifi *</label>
+    <textarea id="jobDesc"></textarea>
+    <button class="btn-primary" onclick="saveJob()" data-i18n="post_btn">E'lonni joylash</button>
+  </div>
+</div>
+
+<div class="modal" id="applyModal">
+  <div class="modal-content">
+    <button class="close-x" onclick="closeApply()">×</button>
+    <h2 data-i18n="apply_title">Ariza topshirish</h2>
+    <p class="subtitle" id="applyJobTitle"></p>
+    <label data-i18n="apply_name">Ismingiz *</label>
+    <input type="text" id="applyName">
+    <label data-i18n="apply_phone">Telefon *</label>
+    <input type="tel" id="applyPhone">
+    <label data-i18n="reg_email">Email</label>
+    <input type="email" id="applyEmail">
+    <label data-i18n="apply_message">Xabar</label>
+    <textarea id="applyMessage"></textarea>
+    <button class="btn-primary" onclick="submitApplication()" data-i18n="apply_btn">Ariza yuborish</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const translations={
+uz:{menu_jobs:"Ishlar",menu_categories:"Kategoriyalar",menu_companies:"Kompaniyalar",menu_about:"Biz haqimizda",menu_reviews:"Otzivlar",login:"Kirish",register:"Ro'yxatdan o'tish",logout:"Chiqish",hero_title:"O'zingizga mos ishni toping",hero_sub:"O'zbekistondagi eng yaxshi vakansiyalar bir joyda",search:"Qidirish",stat_jobs:"Faol vakansiyalar",stat_companies:"Kompaniyalar",stat_users:"Ro'yxatdan o'tganlar",cat_title:"Kategoriyalar bo'yicha ish qidirish",cat_sub:"O'zingizga mos sohani tanlang",jobs_title:"Mashhur vakansiyalar",jobs_sub:"Eng so'nggi va qiziqarli ish o'rinlari",comp_title:"Mashhur kompaniyalar",comp_sub:"O'zbekistondagi yetakchi ish beruvchilar",about_title:"Biz haqimizda",about_sub:"IshTop — sizning ishonchli hamkoringiz",about_m1:"Tashkil topgan yil",about_m2:"Faol vakansiyalar",about_m3:"Hamkor kompaniyalar",about_m4:"Foydalanuvchilar",about_mission:"🎯 Bizning missiyamiz",about_p1:"IshTop — O'zbekistondagi yetakchi ish qidiruv platformasi. Maqsadimiz — har bir insonga o'ziga mos ish topishda yordam berish.",about_p2:"Biz 2018-yildan beri faoliyat yuritamiz va minglab odamlarga yordam berdik.",about_why:"✨ Nega aynan biz?",about_l1:"✅ Bepul — hech qanday to'lov yo'q",about_l2:"✅ Tez — ariza 1 daqiqada",about_l3:"✅ Ishonchli — kompaniyalar tekshirilgan",about_l4:"✅ Qulay — mobil va kompyuterda",about_l5:"✅ Zamonaviy — doimiy yangilanadi",rev_title:"Foydalanuvchilar fikri",rev_sub:"Bizning foydalanuvchilar nima deydi",cta_title:"Ish beruvchimisiz?",cta_sub:"Kompaniyangiz uchun eng yaxshi xodimlarni toping. Bepul e'lon joylang!",cta_btn:"+ Ish e'loni joylash",footer_about:"O'zbekistondagi eng yirik ish qidiruv platformasi.",footer_jobseekers:"Ish qidiruvchilarga",footer_employers:"Ish beruvchilarga",footer_contact:"Bog'lanish",footer_resume:"Rezyume yaratish",footer_prices:"Narxlar",footer_copyright:"© 2025 IshTop. Barcha huquqlar himoyalangan.",reg_title:"Ro'yxatdan o'tish",reg_sub:"Hisobingizni yarating",reg_jobseeker:"👤 Ish qidiruvchi",reg_employer:"🏢 Ish beruvchi",reg_name:"To'liq ismingiz *",reg_company:"Kompaniya nomi *",reg_email:"Email *",reg_phone:"Telefon",reg_password:"Parol *",reg_btn:"Ro'yxatdan o'tish",reg_have:"Hisobingiz bormi?",login_title:"Tizimga kirish",login_sub:"Hisobingizga kiring",login_btn:"Kirish",login_no:"Hisobingiz yo'qmi?",back_home:"← Bosh sahifaga qaytish",post_title:"Yangi ish e'loni",post_sub:"Kompaniyangiz uchun xodim toping",post_position:"Lavozim nomi *",post_company:"Kompaniya nomi *",post_category:"Kategoriya *",post_city:"Shahar *",post_salary:"Maosh (so'mda)",post_phone:"Telefon *",post_desc:"Ish tavsifi *",post_btn:"E'lonni joylash",apply_title:"Ariza topshirish",apply_name:"Ismingiz *",apply_phone:"Telefon *",apply_message:"Xabar",apply_btn:"Ariza yuborish",salary_label:"so'm",apply_btn_card:"✉️ Ariza",detail_btn:"Batafsil",new_badge:"🔥 Yangi",vacancies:"ta vakansiya"},
+ru:{menu_jobs:"Работы",menu_categories:"Категории",menu_companies:"Компании",menu_about:"О нас",menu_reviews:"Отзывы",login:"Войти",register:"Регистрация",logout:"Выйти",hero_title:"Найдите работу по душе",hero_sub:"Лучшие вакансии Узбекистана в одном месте",search:"Искать",stat_jobs:"Активные вакансии",stat_companies:"Компании",stat_users:"Зарегистрированные",cat_title:"Поиск работы по категориям",cat_sub:"Выберите подходящую сферу",jobs_title:"Популярные вакансии",jobs_sub:"Свежие и интересные предложения",comp_title:"Популярные компании",comp_sub:"Ведущие работодатели Узбекистана",about_title:"О нас",about_sub:"IshTop — ваш надежный партнер",about_m1:"Год основания",about_m2:"Активные вакансии",about_m3:"Компании-партнеры",about_m4:"Пользователи",about_mission:"🎯 Наша миссия",about_p1:"IshTop — ведущая платформа по поиску работы в Узбекистане.",about_p2:"Мы работаем с 2018 года и помогли тысячам людей.",about_why:"✨ Почему мы?",about_l1:"✅ Бесплатно",about_l2:"✅ Быстро",about_l3:"✅ Надежно",about_l4:"✅ Удобно",about_l5:"✅ Современно",rev_title:"Отзывы",rev_sub:"Что говорят пользователи",cta_title:"Вы работодатель?",cta_sub:"Найдите лучших сотрудников. Разместите вакансию бесплатно!",cta_btn:"+ Разместить вакансию",footer_about:"Крупнейшая платформа по поиску работы в Узбекистане.",footer_jobseekers:"Соискателям",footer_employers:"Работодателям",footer_contact:"Контакты",footer_resume:"Создать резюме",footer_prices:"Цены",footer_copyright:"© 2025 IshTop. Все права защищены.",reg_title:"Регистрация",reg_sub:"Создайте аккаунт",reg_jobseeker:"👤 Соискатель",reg_employer:"🏢 Работодатель",reg_name:"Ваше имя *",reg_company:"Название компании *",reg_email:"Email *",reg_phone:"Телефон",reg_password:"Пароль *",reg_btn:"Зарегистрироваться",reg_have:"Уже есть аккаунт?",login_title:"Вход",login_sub:"Войдите в аккаунт",login_btn:"Войти",login_no:"Нет аккаунта?",back_home:"← На главную",post_title:"Новая вакансия",post_sub:"Найдите сотрудника",post_position:"Название должности *",post_company:"Название компании *",post_category:"Категория *",post_city:"Город *",post_salary:"Зарплата (сум)",post_phone:"Телефон *",post_desc:"Описание *",post_btn:"Разместить",apply_title:"Откликнуться",apply_name:"Ваше имя *",apply_phone:"Телефон *",apply_message:"Сообщение",apply_btn:"Отправить",salary_label:"сум",apply_btn_card:"✉️ Отклик",detail_btn:"Подробнее",new_badge:"🔥 Новое",vacancies:"вакансий"},
+en:{menu_jobs:"Jobs",menu_categories:"Categories",menu_companies:"Companies",menu_about:"About",menu_reviews:"Reviews",login:"Sign In",register:"Sign Up",logout:"Logout",hero_title:"Find Your Dream Job",hero_sub:"Best vacancies in Uzbekistan in one place",search:"Search",stat_jobs:"Active vacancies",stat_companies:"Companies",stat_users:"Registered",cat_title:"Search jobs by category",cat_sub:"Choose your field",jobs_title:"Popular vacancies",jobs_sub:"Latest offers",comp_title:"Popular companies",comp_sub:"Leading employers",about_title:"About Us",about_sub:"IshTop — your trusted partner",about_m1:"Founded",about_m2:"Active vacancies",about_m3:"Partner companies",about_m4:"Users",about_mission:"🎯 Our mission",about_p1:"IshTop is the leading job search platform in Uzbekistan.",about_p2:"We've been operating since 2018.",about_why:"✨ Why us?",about_l1:"✅ Free",about_l2:"✅ Fast",about_l3:"✅ Reliable",about_l4:"✅ Convenient",about_l5:"✅ Modern",rev_title:"User Reviews",rev_sub:"What users say",cta_title:"Are you an employer?",cta_sub:"Find the best employees. Post free!",cta_btn:"+ Post a Job",footer_about:"Largest job search platform in Uzbekistan.",footer_jobseekers:"For Job Seekers",footer_employers:"For Employers",footer_contact:"Contact",footer_resume:"Create Resume",footer_prices:"Pricing",footer_copyright:"© 2025 IshTop. All rights reserved.",reg_title:"Sign Up",reg_sub:"Create account",reg_jobseeker:"👤 Job Seeker",reg_employer:"🏢 Employer",reg_name:"Full name *",reg_company:"Company name *",reg_email:"Email *",reg_phone:"Phone",reg_password:"Password *",reg_btn:"Sign Up",reg_have:"Have account?",login_title:"Sign In",login_sub:"Login to account",login_btn:"Sign In",login_no:"No account?",back_home:"← Back to home",post_title:"New Job",post_sub:"Find employees",post_position:"Position *",post_company:"Company *",post_category:"Category *",post_city:"City *",post_salary:"Salary (sum)",post_phone:"Phone *",post_desc:"Description *",post_btn:"Post Job",apply_title:"Apply",apply_name:"Your name *",apply_phone:"Phone *",apply_message:"Message",apply_btn:"Send",salary_label:"sum",apply_btn_card:"✉️ Apply",detail_btn:"Details",new_badge:"🔥 New",vacancies:"vacancies"}
+};
+
+let currentLang=localStorage.getItem('lang')||'uz';
+function t(k){return translations[currentLang][k]||translations.uz[k]||k;}
+
+function changeLang(lang){
+  currentLang=lang;localStorage.setItem('lang',lang);
+  applyTranslations();renderJobs();renderCategories();renderCompanies();renderReviews();updateHeader();
+  showToast('🌐 '+lang.toUpperCase(),'#6366f1');
+}
+
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(translations[currentLang][k])el.textContent=translations[currentLang][k];
+  });
+  document.getElementById('langSelect').value=currentLang;
+}
+
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  const d=document.body.classList.contains('dark');
+  localStorage.setItem('theme',d?'dark':'light');
+  document.getElementById('themeBtn').textContent=d?'☀️':'🌙';
+}
+if(localStorage.getItem('theme')==='dark'){
+  document.body.classList.add('dark');
+  document.getElementById('themeBtn').textContent='☀️';
+}
+
+const defaultJobs=[
+{id:1,title:"Frontend Dasturchi (React)",company:"TechUz MChJ",category:"IT",location:"Toshkent",salary:12000000,phone:"+998901234501",desc:"React, JavaScript, HTML/CSS bo'yicha 2+ yil tajriba.",date:"2025-01-15T10:00:00",hot:true},
+{id:2,title:"Backend Dasturchi (PHP)",company:"SoftLine",category:"IT",location:"Toshkent",salary:15000000,phone:"+998901234502",desc:"PHP, Laravel, MySQL. 3+ yil tajriba.",date:"2025-01-15T09:00:00",hot:true},
+{id:3,title:"Mobil Dasturchi (Flutter)",company:"AppDev Studio",category:"IT",location:"Remote",salary:14000000,phone:"+998901234503",desc:"Flutter va Dart. iOS/Android ilovalar.",date:"2025-01-14T16:45:00",hot:true},
+{id:4,title:"Python Dasturchi",company:"DataSoft UZ",category:"IT",location:"Toshkent",salary:13000000,phone:"+998901234504",desc:"Python, Django, PostgreSQL. 2+ yil.",date:"2025-01-14T11:00:00"},
+{id:5,title:"Full Stack Dasturchi",company:"WebMaster Pro",category:"IT",location:"Toshkent",salary:18000000,phone:"+998901234505",desc:"React + Node.js. 3+ yil.",date:"2025-01-13T14:00:00",hot:true},
+{id:6,title:"QA Tester",company:"TestLab UZ",category:"IT",location:"Toshkent",salary:7000000,phone:"+998901234506",desc:"Manual testing, Jira. 1+ yil.",date:"2025-01-13T10:00:00"},
+{id:7,title:"DevOps Engineer",company:"CloudTech",category:"IT",location:"Remote",salary:20000000,phone:"+998901234507",desc:"Docker, Kubernetes, AWS. 3+ yil.",date:"2025-01-12T15:30:00",hot:true},
+{id:8,title:"iOS Dasturchi",company:"AppleDev UZ",category:"IT",location:"Toshkent",salary:16000000,phone:"+998901234508",desc:"Swift, SwiftUI. 2+ yil.",date:"2025-01-12T09:00:00"},
+{id:9,title:"Android Dasturchi",company:"MobileApps",category:"IT",location:"Toshkent",salary:15000000,phone:"+998901234509",desc:"Kotlin, Jetpack Compose.",date:"2025-01-11T13:00:00"},
+{id:10,title:"1C Dasturchi",company:"1C Business",category:"IT",location:"Toshkent",salary:10000000,phone:"+998901234510",desc:"1C:Enterprise 8.3.",date:"2025-01-11T10:00:00"},
+{id:11,title:"Data Scientist",company:"AI Analytics",category:"IT",location:"Toshkent",salary:22000000,phone:"+998901234511",desc:"Python, TensorFlow. ML.",date:"2025-01-10T14:00:00",hot:true},
+{id:12,title:"IT Support",company:"Office Systems",category:"IT",location:"Toshkent",salary:5000000,phone:"+998901234512",desc:"Kompyuter sozlash.",date:"2025-01-10T09:00:00"},
+{id:13,title:"WordPress Dasturchi",company:"WebStudio",category:"IT",location:"Remote",salary:6000000,phone:"+998901234513",desc:"WordPress, WooCommerce.",date:"2025-01-09T15:00:00"},
+{id:14,title:"Cybersecurity",company:"SecureNet",category:"IT",location:"Toshkent",salary:18000000,phone:"+998901234514",desc:"Tarmoq xavfsizligi.",date:"2025-01-08T11:30:00"},
+{id:15,title:"SMM Menejer",company:"Digital Agency",category:"Marketing",location:"Toshkent",salary:6000000,phone:"+998901234515",desc:"Instagram, Telegram sahifalari.",date:"2025-01-15T10:30:00",hot:true},
+{id:16,title:"Targetolog",company:"AdsMaster",category:"Marketing",location:"Toshkent",salary:8000000,phone:"+998901234516",desc:"Facebook Ads, Instagram Ads.",date:"2025-01-14T13:00:00",hot:true},
+{id:17,title:"Kontent Meneger",company:"Media Group UZ",category:"Marketing",location:"Toshkent",salary:5500000,phone:"+998901234517",desc:"Maqola yozish, SEO.",date:"2025-01-14T09:00:00"},
+{id:18,title:"SEO Mutaxassis",company:"SEO Rank",category:"Marketing",location:"Remote",salary:9000000,phone:"+998901234518",desc:"Google SEO, Ahrefs.",date:"2025-01-13T15:00:00"},
+{id:19,title:"Email Marketing",company:"MailPro",category:"Marketing",location:"Toshkent",salary:7000000,phone:"+998901234519",desc:"Mailchimp, SendPulse.",date:"2025-01-12T10:00:00"},
+{id:20,title:"Brend Menejer",company:"BrandUZ",category:"Marketing",location:"Toshkent",salary:12000000,phone:"+998901234520",desc:"Brend strategiyasi.",date:"2025-01-11T11:00:00"},
+{id:21,title:"Grafik Dizayner",company:"Creative Studio",category:"Dizayn",location:"Remote",salary:8000000,phone:"+998901234521",desc:"Figma, Photoshop.",date:"2025-01-15T14:20:00",hot:true},
+{id:22,title:"UI/UX Dizayner",company:"UXLab",category:"Dizayn",location:"Toshkent",salary:14000000,phone:"+998901234522",desc:"Figma, Adobe XD.",date:"2025-01-14T12:00:00",hot:true},
+{id:23,title:"Motion Dizayner",company:"AnimPro",category:"Dizayn",location:"Remote",salary:10000000,phone:"+998901234523",desc:"After Effects, Premiere.",date:"2025-01-13T16:00:00"},
+{id:24,title:"3D Dizayner",company:"3D Studio UZ",category:"Dizayn",location:"Toshkent",salary:13000000,phone:"+998901234524",desc:"Blender, 3ds Max.",date:"2025-01-12T13:30:00"},
+{id:25,title:"Interyer Dizayner",company:"Home Design",category:"Dizayn",location:"Toshkent",salary:9000000,phone:"+998901234525",desc:"AutoCAD, SketchUp.",date:"2025-01-11T15:00:00"},
+{id:26,title:"Sotuv Menejeri",company:"AutoSalon",category:"Sotuv",location:"Toshkent",salary:7000000,phone:"+998901234526",desc:"Avtomobil sotish.",date:"2025-01-15T10:15:00",hot:true},
+{id:27,title:"Call-Markaz",company:"CallCenter UZ",category:"Sotuv",location:"Toshkent",salary:4500000,phone:"+998901234527",desc:"Mijozlarga qo'ng'iroq.",date:"2025-01-14T09:00:00"},
+{id:28,title:"Hududiy Sotuv",company:"FMCG Group",category:"Sotuv",location:"Samarqand",salary:8000000,phone:"+998901234528",desc:"Viloyatlar bo'ylab sotish.",date:"2025-01-13T11:00:00"},
+{id:29,title:"B2B Sotuv",company:"B2B Solutions",category:"Sotuv",location:"Toshkent",salary:12000000,phone:"+998901234529",desc:"Korporativ mijozlar.",date:"2025-01-12T14:00:00",hot:true},
+{id:30,title:"Onlayn Do'kon",company:"E-Commerce UZ",category:"Sotuv",location:"Toshkent",salary:6500000,phone:"+998901234530",desc:"Online do'kon.",date:"2025-01-11T13:00:00"},
+{id:31,title:"Ingliz Tili O'qituvchisi",company:"Bright Future",category:"Ta'lim",location:"Buxoro",salary:5000000,phone:"+998901234531",desc:"IELTS 6.5+.",date:"2025-01-15T15:30:00"},
+{id:32,title:"Matematika O'qituvchisi",company:"Smart School",category:"Ta'lim",location:"Toshkent",salary:6000000,phone:"+998901234532",desc:"Maktab o'quvchilari.",date:"2025-01-14T10:00:00"},
+{id:33,title:"Rus Tili O'qituvchisi",company:"Language Center",category:"Ta'lim",location:"Toshkent",salary:5500000,phone:"+998901234533",desc:"Rus tili. C1.",date:"2025-01-13T11:30:00"},
+{id:34,title:"IT O'qituvchisi",company:"IT Academy",category:"Ta'lim",location:"Toshkent",salary:9000000,phone:"+998901234534",desc:"Python yoki Frontend.",date:"2025-01-12T16:00:00",hot:true},
+{id:35,title:"Bog'cha Tarbiyachi",company:"Kids Garden",category:"Ta'lim",location:"Toshkent",salary:4000000,phone:"+998901234535",desc:"3-6 yoshli bolalar.",date:"2025-01-11T09:00:00"},
+{id:36,title:"Buxgalter",company:"Finance Group",category:"Moliya",location:"Toshkent",salary:9000000,phone:"+998901234536",desc:"1C, Excel. 2+ yil.",date:"2025-01-15T12:00:00",hot:true},
+{id:37,title:"Bosh Buxgalter",company:"Big Corp UZ",category:"Moliya",location:"Toshkent",salary:15000000,phone:"+998901234537",desc:"5+ yil tajriba.",date:"2025-01-14T13:00:00"},
+{id:38,title:"Moliyaviy Tahlilchi",company:"Invest UZ",category:"Moliya",location:"Toshkent",salary:12000000,phone:"+998901234538",desc:"Excel, Power BI.",date:"2025-01-13T10:00:00"},
+{id:39,title:"Bank Kassiri",company:"Bank UZ",category:"Moliya",location:"Samarqand",salary:5500000,phone:"+998901234539",desc:"Naqd pul operatsiyalari.",date:"2025-01-12T11:00:00"},
+{id:40,title:"Sug'urta Agent",company:"Insurance Co",category:"Moliya",location:"Toshkent",salary:6000000,phone:"+998901234540",desc:"Sug'urta xizmatlari.",date:"2025-01-11T14:00:00"},
+{id:41,title:"Kassir",company:"Supermarket X",category:"Xizmat ko'rsatish",location:"Samarqand",salary:3500000,phone:"+998901234541",desc:"Kassa apparati.",date:"2025-01-15T08:00:00"},
+{id:42,title:"Ofitsiant",company:"Milliy Taomlar",category:"Xizmat ko'rsatish",location:"Namangan",salary:3000000,phone:"+998901234542",desc:"Mijozlarga xizmat.",date:"2025-01-14T09:00:00",hot:true},
+{id:43,title:"Oshpaz",company:"Restaurant Premium",category:"Xizmat ko'rsatish",location:"Toshkent",salary:8000000,phone:"+998901234543",desc:"Milliy va yevropa taomlari.",date:"2025-01-13T10:00:00"},
+{id:44,title:"Haydovchi",company:"Logistic Company",category:"Xizmat ko'rsatish",location:"Andijon",salary:4500000,phone:"+998901234544",desc:"Yuk tashish. B toifa.",date:"2025-01-12T07:30:00"},
+{id:45,title:"Qo'riqchi",company:"Security Group",category:"Xizmat ko'rsatish",location:"Toshkent",salary:3500000,phone:"+998901234545",desc:"Obyektni qo'riqlash.",date:"2025-01-11T18:00:00"},
+{id:46,title:"Tozalik Xodimi",company:"Clean Pro",category:"Xizmat ko'rsatish",location:"Toshkent",salary:2800000,phone:"+998901234546",desc:"Ofislarni tozalash.",date:"2025-01-10T07:00:00"},
+{id:47,title:"Barmen",company:"Coffee House",category:"Xizmat ko'rsatish",location:"Toshkent",salary:5000000,phone:"+998901234547",desc:"Kofe tayyorlash.",date:"2025-01-09T16:00:00"},
+{id:48,title:"Fotograf",company:"Wedding Studio",category:"Xizmat ko'rsatish",location:"Toshkent",salary:7000000,phone:"+998901234548",desc:"To'y va tadbirlar.",date:"2025-01-08T14:00:00"},
+{id:49,title:"Quruvchi",company:"BuildMaster",category:"Qurilish",location:"Toshkent",salary:6000000,phone:"+998901234549",desc:"G'isht terish, suvoq.",date:"2025-01-15T07:00:00"},
+{id:50,title:"Elektrik",company:"ElectroServis",category:"Qurilish",location:"Toshkent",salary:7000000,phone:"+998901234550",desc:"Elektr simlari.",date:"2025-01-14T08:00:00",hot:true},
+{id:51,title:"Santexnik",company:"AquaServis",category:"Qurilish",location:"Toshkent",salary:6500000,phone:"+998901234551",desc:"Suv quvurlari.",date:"2025-01-13T09:00:00"},
+{id:52,title:"Payvandchi",company:"MetalWorks",category:"Qurilish",location:"Buxoro",salary:8000000,phone:"+998901234552",desc:"Metall payvandlash.",date:"2025-01-12T10:00:00"},
+{id:53,title:"Arxitektor",company:"ArchDesign",category:"Qurilish",location:"Toshkent",salary:13000000,phone:"+998901234553",desc:"AutoCAD, Revit.",date:"2025-01-11T11:00:00"},
+{id:54,title:"Tibbiy Hamshira",company:"MedCenter",category:"Boshqa",location:"Toshkent",salary:5000000,phone:"+998901234554",desc:"Bemorlarga g'amxo'rlik.",date:"2025-01-15T09:00:00",hot:true},
+{id:55,title:"Farmatsevt",company:"Pharmacy Plus",category:"Boshqa",location:"Samarqand",salary:6000000,phone:"+998901234555",desc:"Dorixona ishi.",date:"2025-01-14T11:00:00"},
+{id:56,title:"Veterinar",company:"Vet Clinic",category:"Boshqa",location:"Toshkent",salary:7000000,phone:"+998901234556",desc:"Hayvonlarni davolash.",date:"2025-01-13T13:00:00"},
+{id:57,title:"Logistika",company:"Cargo UZ",category:"Boshqa",location:"Toshkent",salary:8000000,phone:"+998901234557",desc:"Yuk tashish.",date:"2025-01-12T15:00:00"},
+{id:58,title:"HR Menejer",company:"People First",category:"Boshqa",location:"Toshkent",salary:11000000,phone:"+998901234558",desc:"Rekruting. 3+ yil.",date:"2025-01-11T10:00:00",hot:true},
+{id:59,title:"Ofis Menejeri",company:"Business Center",category:"Boshqa",location:"Toshkent",salary:6000000,phone:"+998901234559",desc:"Ofis ishlari.",date:"2025-01-10T12:00:00"},
+{id:60,title:"Tarjimon",company:"TransLate Pro",category:"Boshqa",location:"Remote",salary:7500000,phone:"+998901234560",desc:"Ingliz-O'zbek tarjima.",date:"2025-01-09T14:00:00"}
+];
+
+const categories=[
+{icon:"💻",name:"IT",count:14},{icon:"📢",name:"Marketing",count:6},
+{icon:"🎨",name:"Dizayn",count:5},{icon:"💼",name:"Sotuv",count:5},
+{icon:"📚",name:"Ta'lim",count:5},{icon:"💰",name:"Moliya",count:5},
+{icon:"🍽️",name:"Xizmat ko'rsatish",count:8},{icon:"🏗️",name:"Qurilish",count:5}
+];
+
+const companies=[
+{name:"TechUz",jobs:12,letter:"T"},{name:"SoftLine",jobs:15,letter:"S"},
+{name:"Digital Pro",jobs:8,letter:"D"},{name:"Creative Studio",jobs:6,letter:"C"},
+{name:"Finance Group",jobs:9,letter:"F"},{name:"Media UZ",jobs:7,letter:"M"}
+];
+
+const reviews=[
+{name:"Aziz Karimov",role:"Frontend Dasturchi",avatar:"A",stars:5,text:"IshTop orqali 2 hafta ichida o'zimga mos ish topdim. Platforma juda qulay!"},
+{name:"Dilnoza Yusupova",role:"SMM Menejer",avatar:"D",stars:5,text:"Ajoyib sayt! Ariza topshirish oson, ish beruvchilar tez javob berishadi."},
+{name:"Sardor Aliyev",role:"Backend Dasturchi",avatar:"S",stars:5,text:"Bu sayt orqali 3 ta ish taklifini oldim. Barcha vakansiyalar haqiqiy!"},
+{name:"Malika Rahimova",role:"Grafik Dizayner",avatar:"M",stars:5,text:"Masofadan ishlashni xohlagan edim — IshTop orqali remote ish topdim."},
+{name:"Jasur Toshmatov",role:"HR Menejer",avatar:"J",stars:4,text:"Ish beruvchi sifatida men ham foydalanaman. Xodimlar tez topiladi."},
+{name:"Nilufar Saidova",role:"Ingliz Tili O'qituvchisi",avatar:"N",stars:5,text:"Buxoroda ish topish qiyin edi, lekin IshTop orqali 1 kunda topdim!"}
+];
+
+let jobs=JSON.parse(localStorage.getItem('jobs')||'[]');
+if(jobs.length===0){jobs=[...defaultJobs];localStorage.setItem('jobs',JSON.stringify(jobs));}
+let applications=JSON.parse(localStorage.getItem('applications')||'[]');
+let users=JSON.parse(localStorage.getItem('users')||'[]');
+let currentUser=JSON.parse(localStorage.getItem('currentUser')||'null');
+let currentJobId=null;
+let userRole='jobseeker';
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(name+'Page').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('regError').classList.remove('show');
+  document.getElementById('loginError').classList.remove('show');
+  if(name==='home'){renderJobs();updateHeader();}
+}
+
+function scrollToId(id){
+  if(!document.getElementById('homePage').classList.contains('active')){
+    showPage('home');
+    setTimeout(()=>document.getElementById(id).scrollIntoView({behavior:'smooth'}),100);
+  }else{
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+
+function renderJobs(){
+  const si=document.getElementById('searchInput'),hs=document.getElementById('heroSearch');
+  if(!si||!hs)return;
+  const search=(si.value+hs.value).toLowerCase();
+  const cat=document.getElementById('categoryFilter').value;
+  const loc=document.getElementById('locationFilter').value||document.getElementById('heroLocation').value;
+  const list=document.getElementById('jobsList');
+
+  let filtered=jobs.filter(j=>{
+    const ms=!search||j.title.toLowerCase().includes(search)||j.company.toLowerCase().includes(search);
+    const mc=!cat||j.category===cat;
+    const ml=!loc||j.location===loc;
+    return ms&&mc&&ml;
+  });
+  filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  document.getElementById('statJobs').textContent=jobs.length;
+  document.getElementById('statCompanies').textContent=new Set(jobs.map(j=>j.company)).size;
+  document.getElementById('statUsers').textContent=users.length;
+  document.getElementById('aboutJobsCount').textContent=jobs.length+'+';
+
+  if(filtered.length===0){
+    list.innerHTML='<div class="empty"><h3>😕 '+t('jobs_title')+' — 0</h3></div>';
+    return;
+  }
+
+  list.innerHTML=filtered.map(j=>`
+    <div class="job-card">
+      <h3>${esc(j.title)} ${j.hot?'<span class="badge badge-hot">'+t('new_badge')+'</span>':''}</h3>
+      <div class="meta">
+        <span>🏢 ${esc(j.company)}</span>
+        <span>📍 ${esc(j.location)}</span>
+        <span>📅 ${new Date(j.date).toLocaleDateString('uz-UZ')}</span>
+      </div>
+      <div style="margin-bottom:10px"><span class="badge">${esc(j.category)}</span></div>
+      <div class="desc">${esc(j.desc)}</div>
+      ${j.salary?'<div class="salary">💰 '+Number(j.salary).toLocaleString()+' '+t('salary_label')+'</div>':''}
+      <div class="actions">
+        <button class="btn-apply" onclick="openApply(${j.id})">${t('apply_btn_card')}</button>
+        <button class="btn-detail" onclick="viewJob(${j.id})">${t('detail_btn')}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCategories(){
+  document.getElementById('categoriesList').innerHTML=categories.map(c=>`
+    <div class="category-card" onclick="filterByCategory('${c.name}')">
+      <div class="category-icon">${c.icon}</div>
+      <h3>${c.name}</h3>
+      <p>${c.count} ${t('vacancies')}</p>
+    </div>
+  `).join('');
+}
+
+function renderCompanies(){
+  document.getElementById('companiesList').innerHTML=companies.map(c=>`
+    <div class="company-card">
+      <div class="company-logo">${c.letter}</div>
+      <h4>${c.name}</h4>
+      <p>${c.jobs} ${t('vacancies')}</p>
+    </div>
+  `).join('');
+}
+
+function renderReviews(){
+  document.getElementById('reviewsList').innerHTML=reviews.map(r=>`
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <p>"${r.text}"</p>
+      <div class="review-author">
+        <div class="review-avatar">${r.avatar}</div>
+        <div class="review-author-info">
+          <h4>${r.name}</h4>
+          <p>${r.role}</p>
         </div>
-        <input type="range" id="speedInput" min="50" max="200" value="90" oninput="calculateRange()">
-      </div>
-
-     
-      <div class="mode-buttons">
-        <button class="mode-btn active" data-mode="eco" onclick="setDriveMode(this, 'eco')">🌱 Eco Mode</button>
-        <button class="mode-btn" data-mode="comfort" onclick="setDriveMode(this, 'comfort')">🚘 Comfort</button>
-        <button class="mode-btn" data-mode="sport" onclick="setDriveMode(this, 'sport')">⚡ Sport+</button>
-      </div>
-
-      
-      <div class="range-result-display">
-        <span class="range-label">Tahminiy Yurish Masofasi:</span>
-        <div class="range-number"><span id="rangeKm">580</span> <small>KM</small></div>
-        <div class="battery-bar-container">
-          <div class="battery-bar" id="batteryBar" style="width: 85%;"></div>
-        </div>
       </div>
     </div>
-  </div>
-</section>
+  `).join('');
+}
 
-<section class="quiz-section">
-  <div class="quiz-card">
-    <div id="quizStep">
-      <div class="quiz-progress-wrapper">
-        <span id="quizStepText" class="step-counter">1/5</span>
-        <div class="quiz-progress"><div class="progress-bar" id="progressBar"></div></div>
-      </div>
-      <h3 id="quizQuestion" class="quiz-title">Yuklanmoqda...</h3>
-      <div id="quizOptions" class="options-grid"></div>
-    </div>
+function filterByCategory(cat){
+  document.getElementById('categoryFilter').value=cat;
+  renderJobs();
+  document.getElementById('jobs').scrollIntoView({behavior:'smooth'});
+}
 
-    <!-- Natija ekrani -->
-    <div id="quizResult" class="result-box" style="display: none;">
-      <span class="result-badge">⚡ Sizning xarakteringizga mos texnika:</span>
-      <h2 id="resultCarName">---</h2>
-      <p id="resultCarDesc">---</p>
-      <button class="btn-reset" onclick="resetQuiz()">Qayta topshirish 🔄</button>
-    </div>
-  </div>
-</section>
+function updateHeader(){
+  const g=document.getElementById('guestActions'),u=document.getElementById('userInfo');
+  if(currentUser){
+    g.style.display='none';u.classList.add('show');
+    document.getElementById('userAvatar').textContent=(currentUser.name||'U')[0].toUpperCase();
+    document.getElementById('userName').textContent=currentUser.name;
+    document.getElementById('userRole').textContent=currentUser.role==='employer'?t('reg_employer'):t('reg_jobseeker');
+  }else{
+    g.style.display='flex';u.classList.remove('show');
+  }
+}
 
+function logout(){
+  if(!confirm('Chiqishni tasdiqlaysizmi?'))return;
+  currentUser=null;localStorage.removeItem('currentUser');
+  updateHeader();showToast('👋','#6366f1');
+}
 
-<footer>
-  <div class="footer-container">
-    <div class="footer-brand">
-      <div class="footer-logo">GARAGE VIP</div>
-      <p>O'zbekistondagi eng eksklyuziv hamda zamonaviy avtomobillar katalogi. Siz uchun xavfsizlik va hashamat uyg'unligi.</p>
-      <div class="footer-socials">
-        <a href="#" class="social-btn">IG</a>
-        <a href="#" class="social-btn">TG</a>
-        <a href="#" class="social-btn">YT</a>
-        <a href="#" class="social-btn">FB</a>
-      </div>
-    </div>
+function selectRole(btn,role){
+  userRole=role;
+  document.querySelectorAll('#roleSelect button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('nameField').style.display=role==='jobseeker'?'block':'none';
+  document.getElementById('companyField').style.display=role==='employer'?'block':'none';
+}
 
-    <div>
-      <h4 class="footer-title">Katalog</h4>
-      <ul class="footer-links">
-        <li><a href="#">Giperkarlar</a></li>
-        <li><a href="#">Elektromobillar</a></li>
-        <li><a href="#">Biznes Klass</a></li>
-        <li><a href="#">Krossoverlar</a></li>
-      </ul>
-    </div>
+function showRegError(m){const e=document.getElementById('regError');e.textContent='❌ '+m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000);}
+function showLoginError(m){const e=document.getElementById('loginError');e.textContent='❌ '+m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000);}
 
-    <div>
-      <h4 class="footer-title">Kompaniya</h4>
-      <ul class="footer-links">
-        <li><a href="#">Biz haqimizda</a></li>
-        <li><a href="#">Xizmatlar</a></li>
-        <li><a href="#">VIP Garaj</a></li>
-        <li><a href="#">Aloqa</a></li>
-      </ul>
-    </div>
+function submitRegister(){
+  const email=document.getElementById('regEmail').value.trim().toLowerCase();
+  const phone=document.getElementById('regPhone').value.trim();
+  const password=document.getElementById('regPassword').value;
+  const name=document.getElementById('regName').value.trim();
+  const company=document.getElementById('regCompany').value.trim();
 
-    <div>
-      <h4 class="footer-title">Yangiliklar</h4>
-      <p style="color: var(--muted); font-size: 13px; margin-bottom: 10px;">Yangi mashinalar kelishi bilan xabardor bo'ling:</p>
-      <div class="newsletter-box">
-        <input type="email" class="newsletter-input" placeholder="Emailingizni kiriting...">
-        <button class="newsletter-btn">OBUNA</button>
-      </div>
-    </div>
-  </div>
+  if(!email||!password){showRegError('Email va parol majburiy!');return;}
+  if(!email.includes('@')||!email.includes('.')){showRegError('Email noto\'g\'ri!');return;}
+  if(password.length<6){showRegError('Parol 6+ belgi!');return;}
+  if(userRole==='jobseeker'&&!name){showRegError('Ismingizni kiriting!');return;}
+  if(userRole==='employer'&&!company){showRegError('Kompaniya nomini kiriting!');return;}
+  if(users.find(u=>u.email===email)){showRegError('Bu email band!');return;}
 
-  <div class="footer-bottom">
-    <p>© 2026 Garage VIP. Barcha huquqlarhimoyalangan.</p>
-    <div class="footer-bottom-links">
-      <a href="#">Muxfiylik Siyosati</a>
-      <a href="#">Foydalanish Qoidalari</a>
-    </div>
-  </div>
-</footer>
+  const nu={id:Date.now(),email,phone,password,name:userRole==='jobseeker'?name:company,role:userRole,registeredAt:new Date().toISOString()};
+  users.push(nu);
+  localStorage.setItem('users',JSON.stringify(users));
+  localStorage.setItem('currentUser',JSON.stringify(nu));
+  currentUser=nu;
 
-  <script src="main.js"></script>
+  ['regEmail','regPhone','regPassword','regName','regCompany'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Xush kelibsiz, '+nu.name+'!');
+  showPage('home');
+}
+
+function submitLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password=document.getElementById('loginPassword').value;
+  if(!email||!password){showLoginError('Email va parol kiriting!');return;}
+  const fu=users.find(u=>u.email===email&&u.password===password);
+  if(!fu){showLoginError('Email yoki parol noto\'g\'ri!');return;}
+  currentUser=fu;
+  localStorage.setItem('currentUser',JSON.stringify(fu));
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPassword').value='';
+  showToast('✅ Xush kelibsiz, '+fu.name+'!');
+  showPage('home');
+}
+
+function openPostJob(){
+  if(!currentUser){showToast('⚠️ Avval ro\'yxatdan o\'ting!','#f59e0b');setTimeout(()=>showPage('register'),800);return;}
+  if(currentUser.role!=='employer'){showToast('⚠️ Faqat ish beruvchilar!','#f59e0b');return;}
+  document.getElementById('jobCompany').value=currentUser.name;
+  document.getElementById('postJobModal').classList.add('active');
+}
+function closePostJob(){
+  document.getElementById('postJobModal').classList.remove('active');
+  ['jobTitle','jobCompany','jobSalary','jobPhone','jobDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('jobCategory').value='';
+  document.getElementById('jobLocation').value='';
+}
+function saveJob(){
+  const title=document.getElementById('jobTitle').value.trim();
+  const company=document.getElementById('jobCompany').value.trim();
+  const category=document.getElementById('jobCategory').value;
+  const location=document.getElementById('jobLocation').value;
+  const salary=document.getElementById('jobSalary').value;
+  const phone=document.getElementById('jobPhone').value.trim();
+  const desc=document.getElementById('jobDesc').value.trim();
+  if(!title||!company||!category||!location||!phone||!desc){showToast('❌ Barcha maydonlarni to\'ldiring!','#ef4444');return;}
+  jobs.push({id:Date.now(),title,company,category,location,salary:salary?Number(salary):null,phone,desc,date:new Date().toISOString(),hot:true,postedBy:currentUser.id});
+  localStorage.setItem('jobs',JSON.stringify(jobs));
+  closePostJob();renderJobs();
+  showToast('✅ E\'lon joylandi!');
+}
+
+function openApply(id){
+  if(!currentUser){showToast('⚠️ Avval tizimga kiring!','#f59e0b');setTimeout(()=>showPage('login'),800);return;}
+  currentJobId=id;
+  const j=jobs.find(x=>x.id===id);
+  document.getElementById('applyJobTitle').textContent=j.title+' — '+j.company;
+  document.getElementById('applyName').value=currentUser.name;
+  document.getElementById('applyPhone').value=currentUser.phone||'';
+  document.getElementById('applyEmail').value=currentUser.email;
+  document.getElementById('applyModal').classList.add('active');
+}
+function closeApply(){
+  document.getElementById('applyModal').classList.remove('active');
+  ['applyName','applyPhone','applyEmail','applyMessage'].forEach(id=>document.getElementById(id).value='');
+}
+function submitApplication(){
+  const name=document.getElementById('applyName').value.trim();
+  const phone=document.getElementById('applyPhone').value.trim();
+  if(!name||!phone){showToast('❌ Ism va telefon majburiy!','#ef4444');return;}
+  applications.push({id:Date.now(),jobId:currentJobId,userId:currentUser.id,name,phone,email:document.getElementById('applyEmail').value.trim(),message:document.getElementById('applyMessage').value.trim(),date:new Date().toISOString()});
+  localStorage.setItem('applications',JSON.stringify(applications));
+  closeApply();showToast('✅ Arizangiz yuborildi!');
+}
+
+function viewJob(id){
+  const j=jobs.find(x=>x.id===id);
+  alert(j.title+'\n\n🏢 '+j.company+'\n📍 '+j.location+'\n💰 '+(j.salary?Number(j.salary).toLocaleString()+' '+t('salary_label'):'—')+'\n📞 '+j.phone+'\n\n'+j.desc);
+}
+
+function showToast(msg,color='#10b981'){
+  const e=document.getElementById('toast');
+  e.textContent=msg;
+  e.style.background='linear-gradient(135deg,'+color+',#059669)';
+  e.classList.add('show');
+  setTimeout(()=>e.classList.remove('show'),3000);
+}
+
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));
+  if(e.key==='Enter'&&document.getElementById('loginPage').classList.contains('active'))submitLogin();
+});
+
+applyTranslations();
+renderJobs();
+renderCategories();
+renderCompanies();
+renderReviews();
+updateHeader();
+</script>
 </body>
 </html>
